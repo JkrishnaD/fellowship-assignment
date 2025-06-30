@@ -1,6 +1,6 @@
 use std::{ net::SocketAddr, str::FromStr };
 
-use axum::{ routing::{ get, post }, Json, Router };
+use axum::{ routing::post, Json, Router };
 use base64::{ engine::general_purpose, Engine as _ };
 use bs58;
 use ed25519_dalek::{ Keypair as DalekKeypair, PublicKey, Signature, Signer, Verifier };
@@ -125,7 +125,7 @@ async fn verify_message(Json(
 
 #[derive(Deserialize)]
 struct CreateTokenRequest {
-    mintAuthority: String,
+    mint_authority: String,
     mint: String,
     decimals: u8,
 }
@@ -134,7 +134,7 @@ async fn create_token(Json(
     payload,
 ): Json<CreateTokenRequest>) -> Json<ApiResponse<serde_json::Value>> {
     let mint = Pubkey::from_str(&payload.mint).unwrap_or_default();
-    let authority = Pubkey::from_str(&payload.mintAuthority).unwrap_or_default();
+    let authority = Pubkey::from_str(&payload.mint_authority).unwrap_or_default();
 
     if mint == Pubkey::default() || authority == Pubkey::default() {
         return Json(ApiResponse {
